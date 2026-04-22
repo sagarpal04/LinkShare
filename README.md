@@ -287,6 +287,3 @@ Set `VITE_API_URL` to your deployed backend URL in your hosting provider's envir
 
 ---
 
-## 📄 License
-
-MIT
