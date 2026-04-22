@@ -1,0 +1,101 @@
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { registerUser } from "../api";
+import { Link as LinkIcon, UserPlus, Lock, Mail, User } from "lucide-react";
+
+function Register() {
+  const [formData, setFormData] = useState({ username: "", email: "", password: "" });
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await registerUser(formData);
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data));
+      navigate("/dashboard");
+    } catch (err) {
+      setError(err.response?.data?.message || "Registration failed");
+    }
+  };
+
+  return (
+    <div className="container" style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh" }}>
+      <div className="glass-card animate-fade-in" style={{ width: "100%", maxWidth: "420px" }}>
+        <div style={{ textAlign: "center", marginBottom: "2rem" }}>
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: "1rem" }}>
+            <div style={{ background: "var(--primary-color)", padding: "1rem", borderRadius: "50%" }}>
+              <LinkIcon size={32} color="white" />
+            </div>
+          </div>
+          <h2 className="hero-title" style={{ fontSize: "2rem" }}>Join LinkHub</h2>
+          <p style={{ color: "#94a3b8" }}>Create your unified profile</p>
+        </div>
+
+        {error && (
+          <div style={{ background: "rgba(239, 68, 68, 0.2)", color: "#fca5a5", padding: "0.75rem", borderRadius: "8px", marginBottom: "1.5rem", textAlign: "center", border: "1px solid rgba(239, 68, 68, 0.3)" }}>
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label>Username</label>
+            <div style={{ position: "relative" }}>
+              <User size={20} style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "#94a3b8" }} />
+              <input
+                type="text"
+                className="form-input"
+                style={{ paddingLeft: "40px" }}
+                placeholder="johndoe"
+                value={formData.username}
+                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                required
+              />
+            </div>
+          </div>
+          <div className="form-group">
+            <label>Email</label>
+            <div style={{ position: "relative" }}>
+              <Mail size={20} style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "#94a3b8" }} />
+              <input
+                type="email"
+                className="form-input"
+                style={{ paddingLeft: "40px" }}
+                placeholder="john@example.com"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                required
+              />
+            </div>
+          </div>
+          <div className="form-group">
+            <label>Password</label>
+            <div style={{ position: "relative" }}>
+              <Lock size={20} style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "#94a3b8" }} />
+              <input
+                type="password"
+                className="form-input"
+                style={{ paddingLeft: "40px" }}
+                placeholder="••••••••"
+                value={formData.password}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                required
+              />
+            </div>
+          </div>
+          <button type="submit" className="btn btn-primary btn-full" style={{ marginTop: "1rem" }}>
+            <UserPlus size={20} /> Create Account
+          </button>
+        </form>
+
+        <div style={{ textAlign: "center", marginTop: "1.5rem", color: "#cbd5e1" }}>
+          Already have an account? <Link to="/login" style={{ color: "var(--primary-color)", fontWeight: "600" }}>Log In</Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default Register;
